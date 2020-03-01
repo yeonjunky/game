@@ -24,7 +24,7 @@ screen.fill(skyblue)
 
 class player:
     def __init__(self, x, y, image):
-        self.img = image
+        self.img = pygame.image.load(image)
         self.x = x
         self.y = y
         self.vel = 0
@@ -32,32 +32,35 @@ class player:
 
     def jump(self):
         self.vel = -10
+        self.height -= self.y
 
     def move(self):
         pass
 
-    def draw(self):
-        pass
+    def draw(self, window):
+        window.blit(self.img, (self.x, self.y))
+
 
     def get_mask(self):
-        pass
+        return pygame.mask.from_surface(self.img)
 
 
 
 class pipe:
-    def __init__(self):
-        pass
+    def __init__(self, top_image, bottom_image):
+        self.vel = 5
+        self.top_image = top_image
+        self.bottom_image = bottom_image
+        self.x
+        self.y
 
     def move(self):
-        pass
+        self.x -= self.vel
 
     def display(self):
         pass
 
     def collide(self):
-        pass
-
-    def display(self):
         pass
 
 
@@ -97,3 +100,8 @@ class game:
     def run(self):
         pass
 
+def main():
+    pass
+
+if __name__ == "__main__":
+    main()
