@@ -23,17 +23,48 @@ pygame.display.set_caption("flappy_bird")
 screen.fill(skyblue)
 
 class player:
-    def __init__(self, x, y):
-        self.img
+    def __init__(self, x, y, image):
+        self.img = image
         self.x = x
         self.y = y
+        self.vel = 0
+        self.height = self.y
+
+    def jump(self):
+        self.vel = -10
+
+    def move(self):
+        pass
+
+    def draw(self):
+        pass
+
+    def get_mask(self):
+        pass
+
+
 
 class pipe:
-    pass
+    def __init__(self):
+        pass
 
-class game(pygame.sprite.Sprite):
+    def move(self):
+        pass
+
+    def display(self):
+        pass
+
+    def collide(self):
+        pass
+
+    def display(self):
+        pass
+
+
+class game:
     def __init__(self):
         self.gravity = 9.8
+        self.score = 0
 
 
     def gen_block(self):
@@ -57,7 +88,7 @@ class game(pygame.sprite.Sprite):
     def update(self):
         pass
 
-    def display_text(self, text, centerx, centery, size):
+    def display_text(self):
         pass
 
     def del_sprite(self):
