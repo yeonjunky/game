@@ -20,9 +20,10 @@ WIN_HEIGHT = 800
 WINDOW = pygame.display.set_mode((WIN_WIDHT, WIN_HEIGHT))
 pygame.display.set_caption("flappy_bird")
 
-screen.fill(skyblue)
+WINDOW.fill(skyblue)
 
 class player:
+
     def __init__(self, x, y, image):
         self.img = pygame.image.load(image)
         self.x = x
@@ -47,61 +48,30 @@ class player:
 
 
 class pipe:
-    def __init__(self, top_image, bottom_image):
+    def __init__(self, x):
         self.vel = 5
-        self.top_image = top_image
-        self.bottom_image = bottom_image
-        self.x
-        self.y
+        self.top_image = pygame.image.load("img/pipe_top.png")
+        self.bottom_image = pygame.image.load("img/pipe_bottom.png")
+        self.x = x
+
+    def set_y(self):
+        y = random.choice(blist)
+        self.top = y[0]
+        self.bottom = y[1]
 
     def move(self):
         self.x -= self.vel
 
-    def display(self):
-        pass
+    def display(self, win):
+        win.bilt(self.top_image, (self.x, self.top))
+        win.bilt(self.bottom_image, (self.x, self.bottom))
 
     def collide(self):
-        pass
-
-
-class game:
-    def __init__(self):
-        self.gravity = 9.8
-        self.score = 0
-
-
-    def gen_block(self):
-        pass
-
-    def new_game(self):
-        pass
-
-    def pause(self):
-        pass
-
-    def gameover(self):
-        pass
-
-    def cnt_score(self):
-        pass
-
-    def display(self):
-        pass
-
-    def update(self):
-        pass
-
-    def display_text(self):
-        pass
-
-    def del_sprite(self):
-        pass
-
-    def run(self):
-        pass
+        pygame.sprite.collide_mask()
 
 def main():
-    pass
+    score = 0
+    bird = player(230, 350)
 
 if __name__ == "__main__":
     main()
