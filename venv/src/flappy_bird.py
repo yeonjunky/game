@@ -22,7 +22,7 @@ pygame.display.set_caption("flappy_bird")
 
 WINDOW.fill(skyblue)
 
-class player:
+class Player:
 
     def __init__(self, x, y, image):
         self.img = pygame.image.load(image)
@@ -30,13 +30,14 @@ class player:
         self.y = y
         self.vel = 0
         self.height = self.y
+        self.gravity = 9.8
 
     def jump(self):
         self.vel = -10
         self.height -= self.y
 
     def move(self):
-        pass
+        self.y -= self.gravity
 
     def draw(self, window):
         window.blit(self.img, (self.x, self.y))
@@ -47,11 +48,11 @@ class player:
 
 
 
-class pipe:
+class Pipe:
     def __init__(self, x):
         self.vel = 5
-        self.top_image = pygame.image.load("img/pipe_top.png")
-        self.bottom_image = pygame.image.load("img/pipe_bottom.png")
+        self.top_image = pygame.image.load("img\\pipe_top.png")
+        self.bottom_image = pygame.image.load("img\\pipe_bottom.png")
         self.x = x
 
     def set_y(self):
@@ -71,7 +72,20 @@ class pipe:
 
 def main():
     score = 0
-    bird = player(230, 350)
+    bird = Player(230, 350, 'img\\flappy-bird.png')
+    pipe = [Pipe(700)]
+
+    while True:
+        for evnet in pygame.event.get():
+            if event.type == pygame.quit():
+                pygame.quit()
+                break
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    game_start = True
+                    bird.jump()
+
+    
 
 if __name__ == "__main__":
     main()
