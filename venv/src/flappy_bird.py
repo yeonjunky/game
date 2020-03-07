@@ -5,10 +5,8 @@ import random
 
 pygame.init()
 
-blist=[[50,310],[60,300],[70,290],[80,280],[90,270],[100,260],[110,250],[120,240],[130,230],[140,220],[150,210],[160,200],[170,190],[180,180],
-       [190,170],[200,160],[210,150],[220,140],[230,130],[240,120],[250,110],[260,100],[270,90],[280,80]
-       ,[290,70],[300,60],[310,50]]
 skyblue = (135, 206, 235)
+white = (255, 255, 255)
 
 WIN_WIDHT = 600
 WIN_HEIGHT = 800
@@ -21,7 +19,7 @@ WINDOW.fill(skyblue)
 class Player:
 
     def __init__(self, x, y, image):
-        self.img = pygame.image.load(image)
+        self.img = pygame.transform.scale(pygame.image.load(image), (50, 50))
         self.x = x
         self.y = y
         self.vel = 0
@@ -29,8 +27,8 @@ class Player:
         self.gravity = 9.8
 
     def jump(self):
-        self.vel = -10
-        self.height -= self.y
+        self.y = -10
+        self.height = self.y
 
     def move(self):
         self.y -= self.gravity
@@ -49,27 +47,51 @@ class Pipe:
         self.top_image = pygame.image.load("img\\pipe_top.png")
         self.bottom_image = pygame.image.load("img\\pipe_bottom.png")
         self.x = x
+        self.win_height = WIN_HEIGHT
+        self.win_width = WIN_WIDHT
+        self.set_y()
+
 
     def set_y(self):
-        y = random.choice(blist)
-        self.top = y[0]
-        self.bottom = y[1]
+        self.y = random.randrange(50, 310)
+        self.top = self.y - self.top_image.get_height()
+        self.bottom = self.y + 200 #gap at top between bottom
 
     def move(self):
         self.x -= self.vel
 
     def display(self, window):
-        window.bilt(self.top_image, (self.x, self.top))
-        window.bilt(self.bottom_image, (self.x, self.bottom))
+        window.blit(self.top_image, (self.x, self.top))
+        window.blit(self.bottom_image, (self.x, self.bottom))
 
-    def collide(self):
-        pygame.sprite.collide_mask()
+    def collide(self, bird, win):
+        bird_mask = bird.get_mask()
+        top_mask = pygame.mask.from_surface(self.top_image)
+        bottom_mask = pygame.mask.from_surface(self.bottom_image)
 
-def game_window(screen, bird, pipe, score):
-    pass
+        top_offset = (self.x - bird.x, self.top - round(bird.y))
+        bottom_offset = (self.x - bird.x, self.bottom - round(bird.y))
+
+        b_point = bird_mask.overlap(bottom_mask, bottom_offset)
+        t_point = bird_mask.overlap(top_mask, top_offset)
+
+        if b_point and t_point:
+            return True
+
+        return False
+
 
 def draw_text(text):
     return pygame.font.Font.render('arial', "Score: " + str(text), 1, (255, 255, 255))
+
+def game_window(win, bird, pipes, score):
+
+    for pipe in pipes:
+        pipe.display(win)
+
+    bird.draw(win)
+
+    pygame.display.update()
 
 def main():
     score = 0
@@ -87,8 +109,10 @@ def main():
                     game_start = True
                     bird.jump()
 
+        game_window(WINDOW, bird, pipe, score)
 
-    pygame.display.flip()
+
+
 
 
 
