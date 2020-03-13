@@ -14,30 +14,44 @@ WIN_HEIGHT = 800
 WINDOW = pygame.display.set_mode((WIN_WIDHT, WIN_HEIGHT))
 pygame.display.set_caption("flappy_bird")
 
-WINDOW.fill(skyblue)
 
 class Player:
 
     def __init__(self, x, y, image):
-        self.img = pygame.transform.scale(pygame.image.load(image), (50, 50))
+        self.img = pygame.image.load(image)
+        self.rescale_img = pygame.transform.scale(self.img, (50, 50))
         self.x = x
         self.y = y
         self.vel = 0
+        self.tick_count = 0
+        self.vel = 0
         self.height = self.y
-        self.gravity = 9.8
 
     def jump(self):
-        self.y = -10
+        self.vel = -10.5
+        self.tick_count = 0
         self.height = self.y
 
-    def move(self):
-        self.y -= self.gravity
+    def move(self):     #copy from tech_with_tim flappy_bird
+        self.tick_count += 1
+
+        # for downward acceleration
+        displacement = self.vel * (self.tick_count) + 0.5 * (3) * (self.tick_count) ** 2  # calculate displacement
+
+        # terminal velocity
+        if displacement >= 16:
+            displacement = (displacement / abs(displacement)) * 16
+
+        if displacement < 0:
+            displacement -= 2
+
+        self.y = self.y + displacement
 
     def draw(self, window):
-        window.blit(self.img, (self.x, self.y))
+        window.blit(self.rescale_img, (self.x, self.y))
 
     def get_mask(self):
-        return pygame.mask.from_surface(self.img)
+        return pygame.mask.from_surface(self.rescale_img)
 
 
 
@@ -55,7 +69,7 @@ class Pipe:
     def set_y(self):
         self.y = random.randrange(50, 310)
         self.top = self.y - self.top_image.get_height()
-        self.bottom = self.y + 200 #gap at top between bottom
+        self.bottom = self.y + 200      #gap at top between bottom
 
     def move(self):
         self.x -= self.vel
@@ -82,40 +96,68 @@ class Pipe:
 
 
 def draw_text(text):
-    return pygame.font.Font.render('arial', "Score: " + str(text), 1, (255, 255, 255))
+    font = pygame.font.SysFont('arial', 30)
+    return font.render("Score: " + str(text), 1, (255, 255, 255))
 
 def game_window(win, bird, pipes, score):
+    WINDOW.fill(skyblue)
 
     for pipe in pipes:
         pipe.display(win)
 
     bird.draw(win)
 
-    pygame.display.update()
+    pygame.display.flip()
+
+
+def pause_window(win):
+    pass
 
 def main():
     score = 0
     bird = Player(230, 350, 'img\\flappy-bird.png')
-    pipe = [Pipe(700)]
+    pipes = [Pipe(700)]
+
+    game_start = False
+    lost = False
+    pause = False
 
     while True:
+        pygame.time.delay(30)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
                 break
+
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
-                    game_start = True
+                    if game_start == False:
+                        game_start = True
                     bird.jump()
 
-        game_window(WINDOW, bird, pipe, score)
+        if game_start == True and lost == False:
+            bird.move()
+
+            if game_start == True:
+                remove = []
+                add = False
+
+                for pipe in pipes:
+                    pipe.move()
+
+                    if pipe.collide(bird, WINDOW) == True:
+                        lost = True
+
+                    if pipe.x < 350:
+                        pipes.append(pipe)
 
 
 
+        if bird.y >= 750:
+            break;
 
-
-
+        game_window(WINDOW, bird, pipes, score)
 
 if __name__ == "__main__":
     main()
